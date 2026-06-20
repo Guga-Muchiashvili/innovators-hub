@@ -286,9 +286,13 @@ export default function EarthGlobe({
   onSelectProject: (p: Project | null) => void;
   selectedProject: Project | null;
 }) {
+  // pull the camera back a little on small screens so the globe isn't clipped
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const camZ = isMobile ? 7.6 : 6;
+
   return (
     <Canvas
-      camera={{ position: [0, 0.4, 6], fov: 42, near: 0.1, far: 1000 }}
+      camera={{ position: [0, 0.4, camZ], fov: 42, near: 0.1, far: 1000 }}
       style={{ background: "transparent" }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onPointerMissed={() => onSelectProject(null)}

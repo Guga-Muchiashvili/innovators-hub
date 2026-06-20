@@ -23,7 +23,7 @@ export default async function OrgPage({
     <main className="min-h-screen bg-white">
       <div className="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,_#f5f3ff_0%,_#ffffff_70%)] pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto px-6 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Top nav */}
         <div className="flex items-center justify-between mb-8">
           <Link
@@ -43,12 +43,12 @@ export default async function OrgPage({
         </div>
 
         {/* Org header */}
-        <div className="flex items-start gap-5 mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-violet-600 flex items-center justify-center text-2xl font-bold text-white flex-shrink-0">
+        <div className="flex items-start gap-4 sm:gap-5 mb-10">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-violet-600 flex items-center justify-center text-xl sm:text-2xl font-bold text-white flex-shrink-0">
             {summary.name.charAt(0)}
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">{summary.name}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">{summary.name}</h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
               <span className="flex items-center gap-1.5">
                 <Layers size={14} className="text-violet-400" />

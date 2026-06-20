@@ -57,23 +57,23 @@ export function FilterPanel({ filters, onChange, totalCount }: FilterPanelProps)
     (filters.searchQuery ? 1 : 0);
 
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-4">
+    <div className="absolute top-16 sm:top-4 left-1/2 -translate-x-1/2 z-20 w-full max-w-3xl px-4">
       {/* Search bar */}
       <div className="relative">
-        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-lg shadow-slate-200/50">
+        <div className="flex items-center gap-2 px-3 sm:px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-lg shadow-slate-200/50">
           <Search size={16} className="text-slate-400 flex-shrink-0" />
           <input
             type="text"
-            placeholder="Search projects, countries, organizations..."
+            placeholder="Search projects, countries..."
             value={filters.searchQuery}
             onChange={(e) => onChange({ ...filters, searchQuery: e.target.value })}
-            className="flex-1 bg-transparent text-slate-900 text-sm placeholder-slate-400 outline-none"
+            className="flex-1 min-w-0 bg-transparent text-slate-900 text-sm placeholder-slate-400 outline-none"
           />
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-slate-400 font-medium whitespace-nowrap">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <span className="hidden sm:inline text-xs text-slate-400 font-medium whitespace-nowrap">
               {totalCount} projects
             </span>
-            <div className="w-px h-4 bg-slate-200" />
+            <div className="hidden sm:block w-px h-4 bg-slate-200" />
             <button
               onClick={() => setExpanded(!expanded)}
               className={`flex items-center gap-2 text-sm font-medium transition-colors ${

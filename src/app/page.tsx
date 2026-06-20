@@ -102,20 +102,20 @@ export default function HomePage() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,_#f5f3ff_0%,_#ffffff_62%)] pointer-events-none" />
 
       {/* Header branding */}
-      <div className="absolute top-4 left-6 z-30 flex items-center gap-3">
+      <div className="absolute top-4 left-4 sm:left-6 z-30 flex items-center gap-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-xs font-bold text-white">
             IH
           </div>
           <div>
             <div className="text-slate-900 font-bold text-sm leading-none">InnovatorsHUB</div>
-            <div className="text-slate-400 text-xs leading-tight">Youth Opportunities</div>
+            <div className="hidden sm:block text-slate-400 text-xs leading-tight">Youth Opportunities</div>
           </div>
         </div>
       </div>
 
       {/* Top-right nav */}
-      <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+      <div className="absolute top-4 right-4 sm:right-6 z-30 flex items-center gap-2">
         <Link
           href="/projects"
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-600 text-white text-xs font-medium hover:bg-violet-700 transition-colors shadow-sm"
@@ -124,7 +124,7 @@ export default function HomePage() {
           <ArrowRight size={13} />
         </Link>
         {lastUpdated && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-violet-100 shadow-sm text-xs text-slate-500">
+          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-violet-100 shadow-sm text-xs text-slate-500">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Updated {lastUpdated.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </div>
@@ -204,7 +204,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2 }}
-          className="absolute bottom-6 right-6 z-20"
+          className="hidden sm:block absolute bottom-6 right-6 z-20"
         >
           <div className="px-4 py-2 rounded-xl bg-white/70 backdrop-blur border border-slate-200 text-xs text-slate-500">
             Click a pin to view project details

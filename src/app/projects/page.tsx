@@ -39,7 +39,7 @@ export default function ProjectsPage() {
     <main className="min-h-screen bg-white">
       <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_at_top,_#f5f3ff_0%,_#ffffff_70%)] pointer-events-none" />
 
-      <div className="relative max-w-6xl mx-auto px-6 py-8">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">

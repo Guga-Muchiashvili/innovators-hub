@@ -91,7 +91,10 @@ export function ProjectListPanel({
   onToggle,
 }: ProjectListProps) {
   return (
-    <div className="absolute left-4 top-24 bottom-4 z-20 flex flex-col" style={{ width: 300 }}>
+    <div
+      className="absolute left-4 top-32 sm:top-24 bottom-4 z-20 flex flex-col"
+      style={{ width: "min(300px, calc(100vw - 2rem))" }}
+    >
       <button
         onClick={onToggle}
         className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all mb-2 ${
