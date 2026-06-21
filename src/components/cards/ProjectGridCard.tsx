@@ -11,6 +11,7 @@ import {
   ExternalLink,
   Building2,
   ArrowUpRight,
+  BadgeCheck,
 } from "lucide-react";
 import { TYPE_COLOR, TYPE_LABEL } from "@/lib/constants";
 import { applyLink } from "@/lib/projects";
@@ -50,7 +51,15 @@ export function ProjectGridCard({
         <h3 className="text-base font-bold text-slate-900 leading-snug mb-1">
           {project.titleEn}
         </h3>
-        <p className="text-xs text-slate-400 mb-4">{project.organization}</p>
+        <div className="flex items-center gap-2 mb-4">
+          <p className="text-xs text-slate-400">{project.organization}</p>
+          {project.verified && (
+            <span className="flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600">
+              <BadgeCheck size={11} />
+              Verified
+            </span>
+          )}
+        </div>
 
         <div className="space-y-2 text-sm text-slate-600 mb-4">
           <div className="flex items-center gap-2">

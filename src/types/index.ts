@@ -29,6 +29,8 @@ export interface Project {
   sourceUrl: string;
   /** Direct link to the real application form / registration / Facebook post. */
   applyUrl?: string;
+  /** True when applyUrl is a real, verified direct registration/detail page. */
+  verified?: boolean;
   sourceOrg: string;
   tags: string[];
   createdAt: string;

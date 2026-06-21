@@ -1,10 +1,12 @@
 import { MOCK_PROJECTS } from "@/data/mockProjects";
 import { WORLD_EXTRA } from "@/data/worldExtra";
 import { GEORGIA_PROJECTS } from "@/data/georgiaProjects";
+import { REAL_OPPORTUNITIES } from "@/data/realOpportunities";
 import { Project, ProjectScope } from "@/types";
 import { TYPE_LABEL } from "@/lib/constants";
 
 export const ALL_PROJECTS: Project[] = [
+  ...REAL_OPPORTUNITIES,
   ...MOCK_PROJECTS,
   ...WORLD_EXTRA,
   ...GEORGIA_PROJECTS,

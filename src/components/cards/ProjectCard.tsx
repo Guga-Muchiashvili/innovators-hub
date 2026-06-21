@@ -15,6 +15,7 @@ import {
   ExternalLink,
   Building2,
   ArrowUpRight,
+  BadgeCheck,
 } from "lucide-react";
 import { TYPE_COLOR, TYPE_LABEL } from "@/lib/constants";
 import { applyLink } from "@/lib/projects";
@@ -51,6 +52,7 @@ export function ProjectCard({
 
   const apply = applyLink(project);
   const isFacebook = /facebook\.com|instagram\.com/i.test(apply.href);
+  const verified = project.verified;
 
   return (
     <AnimatePresence>
@@ -69,12 +71,20 @@ export function ProjectCard({
               style={{ background: accent }}
             />
             <div className="flex items-start justify-between mb-3">
-              <span
-                className="text-xs font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full"
-                style={{ background: `${accent}15`, color: accent }}
-              >
-                {TYPE_LABELS[project.type]}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span
+                  className="text-xs font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full"
+                  style={{ background: `${accent}15`, color: accent }}
+                >
+                  {TYPE_LABELS[project.type]}
+                </span>
+                {verified && (
+                  <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full bg-emerald-50 text-emerald-600">
+                    <BadgeCheck size={12} />
+                    Verified
+                  </span>
+                )}
+              </div>
               <button
                 onClick={onClose}
                 className="p-1.5 rounded-full hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-900"
@@ -198,8 +208,10 @@ export function ProjectCard({
               {apply.label}
               <ExternalLink size={14} />
             </a>
-            <p className="text-center text-[11px] text-slate-400 leading-snug px-2">
-              {isFacebook
+            <p className={`text-center text-[11px] leading-snug px-2 ${verified ? "text-emerald-600" : "text-slate-400"}`}>
+              {verified
+                ? "✓ Direct link — opens this project's official registration page."
+                : isFacebook
                 ? "Opens the organiser's Facebook — the call & form are posted there."
                 : "Opens the organiser's official page with full details & the form."}
             </p>

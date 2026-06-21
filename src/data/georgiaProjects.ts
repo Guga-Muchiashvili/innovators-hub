@@ -38,6 +38,7 @@ interface GIn {
   spots?: number;
   url: string;
   apply?: string;
+  verified?: boolean;
   tags: string[];
 }
 
@@ -70,6 +71,7 @@ function g(p: GIn): Project {
     spots: p.spots,
     sourceUrl: p.url,
     applyUrl: p.apply ?? p.url,
+    verified: p.verified ?? false,
     sourceOrg: p.orgId,
     tags: p.tags,
     createdAt: "2026-06-01",
@@ -100,8 +102,8 @@ const MARNEULI = { city: "Marneuli", lat: 41.4775, lng: 44.8092 };
 
 export const GEORGIA_PROJECTS: Project[] = [
   // ── Tbilisi (the hub) ──────────────────────────────────────────────────────
-  g({ id: "ge001", ...T(41.7156, 44.7967), en: "Global Tech Weekend Tbilisi 2026", ge: "Global Tech Weekend Tbilisi 2026", org: "Global Tech Weekend", orgId: "gtwt", type: "summit", deadline: "2026-06-21", start: "2026-06-19", end: "2026-06-21", ageMin: 16, ageMax: 99, grant: false, spots: 10000, desc: "The Caucasus' largest tech gathering — 10,000+ attendees, 200+ speakers, 80+ side events across Tbilisi. Founders, developers, investors and students.", descGe: "კავკასიის უდიდესი ტექ-შეკრება — 10,000+ მონაწილე, 200+ სპიკერი, 80+ side event თბილისის მასშტაბით. დამფუძნებლები, დეველოპერები, ინვესტორები და სტუდენტები.", url: "https://gtwt.ge", apply: "https://tickets.gtwt.ge/", tags: ["tech", "startup", "networking"] }),
-  g({ id: "ge002", ...T(41.7092, 44.7585), en: "GTWT Side Event — AI Builders Day", ge: "GTWT Side Event — AI Builders Day", org: "Global Tech Weekend", orgId: "gtwt", type: "hackathon", deadline: "2026-06-19", start: "2026-06-19", end: "2026-06-19", ageMin: 16, ageMax: 35, desc: "City-wide side event for AI builders: workshops, demos and rapid prototyping.", descGe: "ქალაქის მასშტაბის side event AI-ბილდერებისთვის: ვორქშოფები, დემოები და სწრაფი პროტოტიპირება.", url: "https://gtwt.ge", apply: "https://luma.com/GTWT2026", tags: ["AI", "hackathon", "tech"] }),
+  g({ id: "ge001", ...T(41.7156, 44.7967), en: "Global Tech Weekend Tbilisi 2026", ge: "Global Tech Weekend Tbilisi 2026", org: "Global Tech Weekend", orgId: "gtwt", type: "summit", deadline: "2026-06-21", start: "2026-06-19", end: "2026-06-21", ageMin: 16, ageMax: 99, grant: false, spots: 10000, desc: "The Caucasus' largest tech gathering — 10,000+ attendees, 200+ speakers, 80+ side events across Tbilisi. Founders, developers, investors and students.", descGe: "კავკასიის უდიდესი ტექ-შეკრება — 10,000+ მონაწილე, 200+ სპიკერი, 80+ side event თბილისის მასშტაბით. დამფუძნებლები, დეველოპერები, ინვესტორები და სტუდენტები.", url: "https://gtwt.ge", apply: "https://tickets.gtwt.ge/", verified: true, tags: ["tech", "startup", "networking"] }),
+  g({ id: "ge002", ...T(41.7092, 44.7585), en: "GTWT Side Event — AI Builders Day", ge: "GTWT Side Event — AI Builders Day", org: "Global Tech Weekend", orgId: "gtwt", type: "hackathon", deadline: "2026-06-19", start: "2026-06-19", end: "2026-06-19", ageMin: 16, ageMax: 35, desc: "City-wide side event for AI builders: workshops, demos and rapid prototyping.", descGe: "ქალაქის მასშტაბის side event AI-ბილდერებისთვის: ვორქშოფები, დემოები და სწრაფი პროტოტიპირება.", url: "https://gtwt.ge", apply: "https://luma.com/GTWT2026", verified: true, tags: ["AI", "hackathon", "tech"] }),
   g({ id: "ge003", ...T(41.7402, 44.7589), en: "Techstars Startup Weekend Tbilisi", ge: "Techstars Startup Weekend Tbilisi", org: "Startup Georgia", orgId: "startup_georgia", type: "hackathon", deadline: "2026-09-25", start: "2026-10-09", end: "2026-10-11", ageMin: 17, ageMax: 35, cost: 30, currency: "GEL", desc: "54-hour weekend where you pitch an idea, build a team and launch a startup with mentors.", descGe: "54-საათიანი weekend, სადაც წარადგენ იდეას, ქმნი გუნდს და უშვებ სტარტაპს მენტორებთან ერთად.", url: "https://www.startupgeorgia.org/projects/techstars-startup-weekend-tbilisi", tags: ["startup", "hackathon", "entrepreneurship"] }),
   g({ id: "ge004", ...T(41.7330, 44.7360), en: "HackMeOut Tbilisi", ge: "HackMeOut Tbilisi", org: "Startup Georgia", orgId: "startup_georgia", type: "hackathon", deadline: "2026-08-30", start: "2026-09-13", end: "2026-09-14", ageMin: 16, ageMax: 30, desc: "Student hackathon solving real civic and business challenges in 24 hours.", descGe: "სტუდენტური ჰაკათონი, რომელიც 24 საათში წყვეტს რეალურ სამოქალაქო და ბიზნეს გამოწვევებს.", url: "https://www.startupgeorgia.org/projects/hackmeout-tbilisi", tags: ["hackathon", "students", "civic tech"] }),
   g({ id: "ge005", ...T(41.7124, 44.7995), en: "Startup Grind Tbilisi", ge: "Startup Grind Tbilisi", org: "Startup Grind", orgId: "startup_grind", type: "conference", deadline: "2026-07-20", start: "2026-07-30", end: "2026-07-30", ageMin: 18, ageMax: 99, desc: "Monthly fireside chats and networking for the Tbilisi entrepreneurial community.", descGe: "ყოველთვიური fireside საუბრები და ნეთვორქინგი თბილისის მეწარმეთა საზოგადოებისთვის.", url: "https://www.startupgrind.com/tbilisi/", tags: ["networking", "entrepreneurship", "business"] }),
