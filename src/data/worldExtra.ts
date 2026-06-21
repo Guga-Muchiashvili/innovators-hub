@@ -27,6 +27,7 @@ interface WIn {
   langs?: string[];
   spots?: number;
   url: string;
+  apply?: string;
   tags: string[];
 }
 
@@ -58,6 +59,7 @@ function w(p: WIn): Project {
     languages: p.langs ?? ["English"],
     spots: p.spots,
     sourceUrl: p.url,
+    applyUrl: p.apply ?? p.url,
     sourceOrg: p.orgId,
     tags: p.tags,
     createdAt: "2026-06-01",
@@ -114,7 +116,8 @@ export const WORLD_EXTRA: Project[] = [
     descGe: "მსოფლიოს წამყვანი ფორუმი ახალგაზრდა ლიდერებისთვის — 2200+ დელეგატი 190+ ქვეყნიდან. ხელმისაწვდომია სტიპენდიები.",
     req: ["Age 18-30", "Leadership experience", "Motivation letter"],
     spots: 3,
-    url: "https://www.oneyoungworld.com",
+    url: "https://www.oneyoungworld.com/scholarship/leading-scholarship-2026",
+    apply: "https://apply.oneyoungworld.com/",
     tags: ["leadership", "global", "scholarship"],
   }),
   w({
@@ -193,6 +196,7 @@ export const WORLD_EXTRA: Project[] = [
     descGe: "მსოფლიოს ერთ-ერთი უდიდესი ტექ-კონფერენცია. ხელმისაწვდომია სტუდენტური და სტარტაპ ბილეთები.",
     req: ["Open to all", "Discounted student tickets"],
     url: "https://websummit.com",
+    apply: "https://websummit.com/tickets/",
     tags: ["tech", "startup", "networking"],
   }),
   w({

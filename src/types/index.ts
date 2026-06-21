@@ -27,6 +27,8 @@ export interface Project {
   languages: string[];
   spots?: number;
   sourceUrl: string;
+  /** Direct link to the real application form / registration / Facebook post. */
+  applyUrl?: string;
   sourceOrg: string;
   tags: string[];
   createdAt: string;

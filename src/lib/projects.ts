@@ -35,6 +35,35 @@ export function matchesQuery(p: Project, query: string): boolean {
   return q.split(/\s+/).every((tok) => hay.includes(tok));
 }
 
+/**
+ * Resolves the real "apply" destination for a project and a label that matches
+ * what the user will actually land on (a form, a Facebook post, or a site).
+ */
+export function applyLink(p: Project): { href: string; label: string } {
+  let url = p.applyUrl || p.sourceUrl;
+  if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
+  const u = url.toLowerCase();
+  let label = "Apply now";
+  if (u.includes("facebook.com") || u.includes("instagram.com") || u.includes("/fb")) {
+    label = "Apply via Facebook";
+  } else if (
+    u.includes("forms.gle") ||
+    u.includes("docs.google.com/forms") ||
+    u.includes("typeform") ||
+    u.includes("luma.com") ||
+    u.includes("lu.ma") ||
+    u.includes("tickets.") ||
+    u.includes("/tickets") ||
+    u.includes("eventbrite") ||
+    u.includes("biletebi") ||
+    u.includes("/register") ||
+    u.includes("apply.")
+  ) {
+    label = "Register / Apply";
+  }
+  return { href: url, label };
+}
+
 export function isExpired(deadline: string): boolean {
   if (!deadline) return false;
   try {

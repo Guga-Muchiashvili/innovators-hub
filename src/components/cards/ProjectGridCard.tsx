@@ -13,6 +13,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { TYPE_COLOR, TYPE_LABEL } from "@/lib/constants";
+import { applyLink } from "@/lib/projects";
 
 export function ProjectGridCard({
   project,
@@ -23,9 +24,7 @@ export function ProjectGridCard({
 }) {
   const color = TYPE_COLOR[project.type];
   const days = differenceInDays(parseISO(project.deadline), new Date());
-  const applyHref = /^https?:\/\//i.test(project.sourceUrl)
-    ? project.sourceUrl
-    : `https://${project.sourceUrl}`;
+  const apply = applyLink(project);
 
   return (
     <div className="group flex flex-col rounded-2xl border border-violet-100 bg-white hover:border-violet-300 hover:shadow-lg hover:shadow-violet-200/40 transition-all overflow-hidden">
@@ -88,12 +87,12 @@ export function ProjectGridCard({
 
         <div className="mt-auto flex items-center gap-2">
           <a
-            href={applyHref}
+            href={apply.href}
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-semibold hover:bg-violet-700 transition-colors"
           >
-            Apply
+            {apply.label}
             <ExternalLink size={13} />
           </a>
           {showOrgLink && (

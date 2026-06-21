@@ -17,6 +17,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { TYPE_COLOR, TYPE_LABEL } from "@/lib/constants";
+import { applyLink } from "@/lib/projects";
 
 const TYPE_LABELS = TYPE_LABEL;
 
@@ -48,10 +49,8 @@ export function ProjectCard({
 }) {
   const accent = TYPE_COLOR[project.type];
 
-  // guarantee a usable link even if the source url is malformed
-  const applyHref = /^https?:\/\//i.test(project.sourceUrl)
-    ? project.sourceUrl
-    : `https://${project.sourceUrl}`;
+  const apply = applyLink(project);
+  const isFacebook = /facebook\.com|instagram\.com/i.test(apply.href);
 
   return (
     <AnimatePresence>
@@ -190,15 +189,20 @@ export function ProjectCard({
           {/* CTA */}
           <div className="p-4 border-t border-slate-100 space-y-2">
             <a
-              href={applyHref}
+              href={apply.href}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-violet-600 text-white font-semibold text-sm hover:bg-violet-700 transition-colors"
             >
-              Apply Now
+              {apply.label}
               <ExternalLink size={14} />
             </a>
+            <p className="text-center text-[11px] text-slate-400 leading-snug px-2">
+              {isFacebook
+                ? "Opens the organiser's Facebook — the call & form are posted there."
+                : "Opens the organiser's official page with full details & the form."}
+            </p>
             <Link
               href={`/org/${project.sourceOrg}`}
               className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl border border-violet-200 text-violet-700 font-medium text-sm hover:bg-violet-50 transition-colors"
