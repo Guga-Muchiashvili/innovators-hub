@@ -5,6 +5,8 @@ export interface Project {
   organization: string;
   organizationLogo?: string;
   type: ProjectType;
+  /** "world" = takes place abroad; "georgia" = local, inside Georgia */
+  scope: ProjectScope;
   country: string;
   countryCode: string;
   city: string;
@@ -31,6 +33,8 @@ export interface Project {
   updatedAt: string;
 }
 
+export type ProjectScope = "world" | "georgia";
+
 export type ProjectType =
   | "erasmus_plus"
   | "youth_exchange"
@@ -41,11 +45,19 @@ export type ProjectType =
   | "internship"
   | "scholarship"
   | "conference"
+  | "model_un"
+  | "camp"
+  | "hackathon"
+  | "forum"
+  | "summit"
+  | "competition"
   | "other";
 
 export interface FilterState {
   types: ProjectType[];
   countries: string[];
+  /** Georgian cities (used when scope = "georgia") */
+  cities: string[];
   ageRange: [number, number];
   maxCost: number | null;
   grantOnly: boolean;

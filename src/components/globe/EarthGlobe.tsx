@@ -23,6 +23,12 @@ function latLngToVec3(lat: number, lng: number, r: number): THREE.Vector3 {
   );
 }
 
+function lerpAngle(a: number, b: number, t: number): number {
+  let diff = ((b - a + Math.PI) % (2 * Math.PI)) - Math.PI;
+  if (diff < -Math.PI) diff += 2 * Math.PI;
+  return a + diff * t;
+}
+
 // ── dotted land sampling from earth image ─────────────────────────────────────
 
 function useLandDots(src: string): Float32Array | null {
@@ -253,8 +259,17 @@ function Globe({
   const [hovered, setHovered] = useState<string | null>(null);
 
   useFrame((_, d) => {
-    if (spin.current && !selected && !hovered) {
-      spin.current.rotation.y += d * 0.06;
+    const gp = spin.current;
+    if (!gp) return;
+    // zoom into the selected project: grow the globe + bring the pin to front
+    const targetScale = selected ? 1.6 : 1;
+    gp.scale.setScalar(THREE.MathUtils.lerp(gp.scale.x, targetScale, 0.08));
+    if (selected) {
+      const dir = latLngToVec3(selected.lat, selected.lng, 1);
+      const targetY = Math.atan2(-dir.x, dir.z);
+      gp.rotation.y = lerpAngle(gp.rotation.y, targetY, 0.08);
+    } else if (!hovered) {
+      gp.rotation.y += d * 0.06;
     }
   });
 
@@ -293,7 +308,7 @@ export default function EarthGlobe({
   return (
     <Canvas
       camera={{ position: [0, 0.4, camZ], fov: 42, near: 0.1, far: 1000 }}
-      style={{ background: "transparent" }}
+      style={{ background: "transparent", touchAction: "none" }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onPointerMissed={() => onSelectProject(null)}
     >
@@ -302,6 +317,8 @@ export default function EarthGlobe({
       <directionalLight position={[-4, -1, -3]} intensity={0.2} color="#cbd5e1" />
       <Globe projects={projects} onSelect={onSelectProject} selected={selectedProject} />
       <OrbitControls
+        makeDefault
+        enableRotate
         enableZoom
         enablePan={false}
         minDistance={3.2}
@@ -309,6 +326,7 @@ export default function EarthGlobe({
         enableDamping
         dampingFactor={0.07}
         rotateSpeed={0.55}
+        touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
       />
     </Canvas>
   );

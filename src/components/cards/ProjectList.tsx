@@ -92,7 +92,7 @@ export function ProjectListPanel({
 }: ProjectListProps) {
   return (
     <div
-      className="absolute left-4 top-32 sm:top-24 bottom-4 z-20 flex flex-col"
+      className="absolute left-4 top-32 sm:top-24 bottom-20 z-20 flex flex-col"
       style={{ width: "min(300px, calc(100vw - 2rem))" }}
     >
       <button

@@ -1,33 +1,31 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Project, FilterState } from "@/types";
-import { MOCK_PROJECTS } from "@/data/mockProjects";
+import { ArrowRight, Globe2, MapPin } from "lucide-react";
+import { Project, FilterState, ProjectScope } from "@/types";
+import { getActiveProjects, matchesQuery } from "@/lib/projects";
 import { FilterPanel } from "@/components/filters/FilterPanel";
 import { ProjectCard } from "@/components/cards/ProjectCard";
 import { ProjectListPanel } from "@/components/cards/ProjectList";
 import { Legend } from "@/components/globe/Legend";
-import { filterExpiredProjects } from "@/lib/scraper";
 import { motion, AnimatePresence } from "framer-motion";
 
 const EarthGlobe = dynamic(() => import("@/components/globe/EarthGlobe"), {
   ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-16 h-16 rounded-full border-2 border-indigo-500/30 border-t-indigo-500 animate-spin" />
-        <p className="text-slate-500 text-sm">Loading Earth...</p>
-      </div>
-    </div>
-  ),
+  loading: () => null,
+});
+
+const GeorgiaMap = dynamic(() => import("@/components/globe/GeorgiaMap"), {
+  ssr: false,
+  loading: () => null,
 });
 
 const DEFAULT_FILTERS: FilterState = {
   types: [],
   countries: [],
+  cities: [],
   ageRange: [16, 99],
   maxCost: null,
   grantOnly: false,
@@ -42,6 +40,8 @@ function applyFilters(projects: Project[], filters: FilterState): Project[] {
       return false;
     if (filters.countries.length > 0 && !filters.countries.includes(p.country))
       return false;
+    if (filters.cities.length > 0 && !filters.cities.includes(p.city))
+      return false;
     if (p.ageMax < filters.ageRange[0] || p.ageMin > filters.ageRange[1])
       return false;
     if (filters.grantOnly && !p.grantCovered) return false;
@@ -49,45 +49,41 @@ function applyFilters(projects: Project[], filters: FilterState): Project[] {
       if (p.cost !== "free" && typeof p.cost === "number" && p.cost > filters.maxCost)
         return false;
     }
-    if (filters.searchQuery) {
-      const q = filters.searchQuery.toLowerCase();
-      const matches =
-        p.title.toLowerCase().includes(q) ||
-        p.titleEn.toLowerCase().includes(q) ||
-        p.country.toLowerCase().includes(q) ||
-        p.city.toLowerCase().includes(q) ||
-        p.organization.toLowerCase().includes(q) ||
-        p.tags.some((t) => t.toLowerCase().includes(q));
-      if (!matches) return false;
-    }
+    if (filters.searchQuery && !matchesQuery(p, filters.searchQuery))
+      return false;
     return true;
   });
 }
 
 export default function HomePage() {
-  const [allProjects, setAllProjects] = useState<Project[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [scope, setScope] = useState<ProjectScope>("world");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [listOpen, setListOpen] = useState(false);
 
-  useEffect(() => {
-    async function loadProjects() {
-      const active = await filterExpiredProjects(MOCK_PROJECTS);
-      setAllProjects(active);
-      setFilteredProjects(active);
-      setLastUpdated(new Date());
-      setLoading(false);
-    }
-    loadProjects();
-  }, []);
+  const allActive = useMemo(() => getActiveProjects(), []);
 
   useEffect(() => {
-    setFilteredProjects(applyFilters(allProjects, filters));
+    setLastUpdated(new Date());
+    setLoading(false);
+  }, []);
+
+  const scopedProjects = useMemo(
+    () => allActive.filter((p) => p.scope === scope),
+    [allActive, scope]
+  );
+
+  const filteredProjects = useMemo(
+    () => applyFilters(scopedProjects, filters),
+    [scopedProjects, filters]
+  );
+
+  // reset selection when scope or filters change
+  useEffect(() => {
     setSelectedProject(null);
-  }, [filters, allProjects]);
+  }, [scope, filters]);
 
   const handleSelectProject = useCallback((project: Project | null) => {
     setSelectedProject(project);
@@ -95,6 +91,13 @@ export default function HomePage() {
 
   const handleCloseCard = useCallback(() => {
     setSelectedProject(null);
+  }, []);
+
+  const handleScopeChange = useCallback((s: ProjectScope) => {
+    setScope(s);
+    setFilters(DEFAULT_FILTERS);
+    setSelectedProject(null);
+    setListOpen(false);
   }, []);
 
   return (
@@ -132,17 +135,29 @@ export default function HomePage() {
       </div>
 
       {/* Filter Panel */}
-      <FilterPanel filters={filters} onChange={setFilters} totalCount={filteredProjects.length} />
+      <FilterPanel
+        filters={filters}
+        onChange={setFilters}
+        totalCount={filteredProjects.length}
+        scope={scope}
+      />
 
-      {/* Globe — fills entire screen behind UI layers */}
+      {/* Map — fills entire screen behind UI layers */}
       <div className="absolute inset-0">
-        {!loading && (
-          <EarthGlobe
-            projects={filteredProjects}
-            onSelectProject={handleSelectProject}
-            selectedProject={selectedProject}
-          />
-        )}
+        {!loading &&
+          (scope === "world" ? (
+            <EarthGlobe
+              projects={filteredProjects}
+              onSelectProject={handleSelectProject}
+              selectedProject={selectedProject}
+            />
+          ) : (
+            <GeorgiaMap
+              projects={filteredProjects}
+              onSelectProject={handleSelectProject}
+              selectedProject={selectedProject}
+            />
+          ))}
       </div>
 
       {/* Loading overlay */}
@@ -159,7 +174,7 @@ export default function HomePage() {
               </div>
               <div className="text-center">
                 <div className="text-slate-900 font-semibold mb-1">Loading opportunities...</div>
-                <div className="text-slate-400 text-sm">Scanning 20+ sources for Georgian youth</div>
+                <div className="text-slate-400 text-sm">Scanning 25+ sources for Georgian youth</div>
               </div>
             </div>
           </motion.div>
@@ -191,7 +206,7 @@ export default function HomePage() {
 
       {/* No results */}
       {!loading && filteredProjects.length === 0 && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20">
           <div className="px-6 py-3 rounded-xl bg-white border border-slate-200 shadow-sm text-sm text-slate-500">
             No projects match your filters.
           </div>
@@ -204,13 +219,57 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2 }}
-          className="hidden sm:block absolute bottom-6 right-6 z-20"
+          className="hidden lg:block absolute bottom-6 right-6 z-20"
         >
           <div className="px-4 py-2 rounded-xl bg-white/70 backdrop-blur border border-slate-200 text-xs text-slate-500">
             Click a pin to view project details
           </div>
         </motion.div>
       )}
+
+      {/* Bottom World / Georgia toggle */}
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20">
+        <div className="flex items-center gap-1 p-1 rounded-full bg-white/90 backdrop-blur-xl border border-violet-100 shadow-lg shadow-violet-200/40">
+          <ScopeButton
+            active={scope === "world"}
+            onClick={() => handleScopeChange("world")}
+            icon={<Globe2 size={15} />}
+            label="World"
+          />
+          <ScopeButton
+            active={scope === "georgia"}
+            onClick={() => handleScopeChange("georgia")}
+            icon={<MapPin size={15} />}
+            label="Georgia"
+          />
+        </div>
+      </div>
     </main>
+  );
+}
+
+function ScopeButton({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+        active
+          ? "bg-violet-600 text-white shadow-sm"
+          : "text-slate-500 hover:text-violet-700"
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }

@@ -2,17 +2,20 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, Globe2, X } from "lucide-react";
-import { getActiveProjects } from "@/lib/projects";
+import { Search, Globe2, X, MapPin } from "lucide-react";
+import { getActiveProjects, matchesQuery } from "@/lib/projects";
 import { ProjectGridCard } from "@/components/cards/ProjectGridCard";
 import { TYPE_LIST } from "@/lib/constants";
-import { ProjectType } from "@/types";
+import { ProjectType, ProjectScope } from "@/types";
 
 const ALL_PROJECTS = getActiveProjects();
+
+type ScopeTab = "all" | ProjectScope;
 
 export default function ProjectsPage() {
   const [query, setQuery] = useState("");
   const [activeTypes, setActiveTypes] = useState<ProjectType[]>([]);
+  const [scopeTab, setScopeTab] = useState<ScopeTab>("all");
 
   const toggleType = (t: ProjectType) =>
     setActiveTypes((prev) =>
@@ -20,20 +23,21 @@ export default function ProjectsPage() {
     );
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     return ALL_PROJECTS.filter((p) => {
+      if (scopeTab !== "all" && p.scope !== scopeTab) return false;
       if (activeTypes.length && !activeTypes.includes(p.type)) return false;
-      if (!q) return true;
-      return (
-        p.titleEn.toLowerCase().includes(q) ||
-        p.title.toLowerCase().includes(q) ||
-        p.country.toLowerCase().includes(q) ||
-        p.city.toLowerCase().includes(q) ||
-        p.organization.toLowerCase().includes(q) ||
-        p.tags.some((t) => t.toLowerCase().includes(q))
-      );
+      return matchesQuery(p, query);
     });
-  }, [query, activeTypes]);
+  }, [query, activeTypes, scopeTab]);
+
+  const counts = useMemo(
+    () => ({
+      all: ALL_PROJECTS.length,
+      world: ALL_PROJECTS.filter((p) => p.scope === "world").length,
+      georgia: ALL_PROJECTS.filter((p) => p.scope === "georgia").length,
+    }),
+    []
+  );
 
   return (
     <main className="min-h-screen bg-white">
@@ -61,9 +65,34 @@ export default function ProjectsPage() {
         </div>
 
         <h1 className="text-3xl font-bold text-slate-900 mb-1">All Projects</h1>
-        <p className="text-slate-500 mb-6">
-          {filtered.length} live opportunities for Georgian youth across Europe.
+        <p className="text-slate-500 mb-5">
+          {filtered.length} live opportunities for Georgian youth — abroad and at home.
         </p>
+
+        {/* Scope tabs */}
+        <div className="inline-flex items-center gap-1 p-1 rounded-full bg-violet-50 border border-violet-100 mb-5">
+          {([
+            { id: "all", label: "All", icon: null },
+            { id: "world", label: "World", icon: <Globe2 size={14} /> },
+            { id: "georgia", label: "Georgia", icon: <MapPin size={14} /> },
+          ] as { id: ScopeTab; label: string; icon: React.ReactNode }[]).map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setScopeTab(t.id)}
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                scopeTab === t.id
+                  ? "bg-violet-600 text-white shadow-sm"
+                  : "text-slate-500 hover:text-violet-700"
+              }`}
+            >
+              {t.icon}
+              {t.label}
+              <span className={scopeTab === t.id ? "text-white/70" : "text-slate-400"}>
+                {counts[t.id]}
+              </span>
+            </button>
+          ))}
+        </div>
 
         {/* Search */}
         <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-white border border-violet-100 shadow-sm mb-4 max-w-xl">

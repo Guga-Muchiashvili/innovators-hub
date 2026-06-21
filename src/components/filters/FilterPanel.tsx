@@ -2,24 +2,20 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FilterState, ProjectType } from "@/types";
+import { FilterState, ProjectType, ProjectScope } from "@/types";
 import { Search, SlidersHorizontal, X, ChevronDown } from "lucide-react";
-import { TYPE_LIST } from "@/lib/constants";
+import { TYPE_LIST, WORLD_COUNTRIES, GEORGIA_CITIES } from "@/lib/constants";
 
 const PROJECT_TYPES = TYPE_LIST;
-
-const COUNTRIES = [
-  "Spain", "Germany", "France", "Italy", "Poland", "Portugal",
-  "Netherlands", "Belgium", "Austria", "Greece", "Estonia", "Czech Republic",
-];
 
 interface FilterPanelProps {
   filters: FilterState;
   onChange: (f: FilterState) => void;
   totalCount: number;
+  scope?: ProjectScope;
 }
 
-export function FilterPanel({ filters, onChange, totalCount }: FilterPanelProps) {
+export function FilterPanel({ filters, onChange, totalCount, scope = "world" }: FilterPanelProps) {
   const [expanded, setExpanded] = useState(false);
   const [ageRange, setAgeRange] = useState<[number, number]>([16, 35]);
 
@@ -37,10 +33,18 @@ export function FilterPanel({ filters, onChange, totalCount }: FilterPanelProps)
     onChange({ ...filters, countries });
   };
 
+  const toggleCity = (city: string) => {
+    const cities = filters.cities.includes(city)
+      ? filters.cities.filter((c) => c !== city)
+      : [...filters.cities, city];
+    onChange({ ...filters, cities });
+  };
+
   const clearAll = () => {
     onChange({
       types: [],
       countries: [],
+      cities: [],
       ageRange: [16, 99],
       maxCost: null,
       grantOnly: false,
@@ -53,6 +57,7 @@ export function FilterPanel({ filters, onChange, totalCount }: FilterPanelProps)
   const activeFiltersCount =
     filters.types.length +
     filters.countries.length +
+    filters.cities.length +
     (filters.grantOnly ? 1 : 0) +
     (filters.searchQuery ? 1 : 0);
 
@@ -143,27 +148,50 @@ export function FilterPanel({ filters, onChange, totalCount }: FilterPanelProps)
 
               <div className="h-px bg-slate-100" />
 
-              {/* Countries */}
-              <div>
-                <div className="text-xs text-slate-400 uppercase tracking-wider mb-2.5 font-medium">
-                  Country
+              {/* Country (world) or City (georgia) */}
+              {scope === "world" ? (
+                <div>
+                  <div className="text-xs text-slate-400 uppercase tracking-wider mb-2.5 font-medium">
+                    Country
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {WORLD_COUNTRIES.map((country) => (
+                      <button
+                        key={country}
+                        onClick={() => toggleCountry(country)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                          filters.countries.includes(country)
+                            ? "bg-violet-600 border-violet-600 text-white"
+                            : "border-slate-200 text-slate-600 hover:border-violet-300 hover:text-violet-700"
+                        }`}
+                      >
+                        {country}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {COUNTRIES.map((country) => (
-                    <button
-                      key={country}
-                      onClick={() => toggleCountry(country)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                        filters.countries.includes(country)
-                          ? "bg-violet-600 border-violet-600 text-white"
-                          : "border-slate-200 text-slate-600 hover:border-violet-300 hover:text-violet-700"
-                      }`}
-                    >
-                      {country}
-                    </button>
-                  ))}
+              ) : (
+                <div>
+                  <div className="text-xs text-slate-400 uppercase tracking-wider mb-2.5 font-medium">
+                    City
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {GEORGIA_CITIES.map((city) => (
+                      <button
+                        key={city}
+                        onClick={() => toggleCity(city)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                          filters.cities.includes(city)
+                            ? "bg-violet-600 border-violet-600 text-white"
+                            : "border-slate-200 text-slate-600 hover:border-violet-300 hover:text-violet-700"
+                        }`}
+                      >
+                        {city}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="h-px bg-slate-100" />
 
@@ -248,6 +276,16 @@ export function FilterPanel({ filters, onChange, totalCount }: FilterPanelProps)
             <button
               key={c}
               onClick={() => toggleCountry(c)}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-violet-600 text-white hover:bg-violet-700 transition-colors"
+            >
+              {c}
+              <X size={10} />
+            </button>
+          ))}
+          {filters.cities.map((c) => (
+            <button
+              key={c}
+              onClick={() => toggleCity(c)}
               className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-violet-600 text-white hover:bg-violet-700 transition-colors"
             >
               {c}

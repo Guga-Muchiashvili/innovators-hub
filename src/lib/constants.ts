@@ -19,6 +19,12 @@ export const TYPE_COLOR: Record<ProjectType, string> = {
   internship: "#4f46e5",
   scholarship: "#6366f1",
   conference: "#8b5cf6",
+  model_un: "#7e22ce",
+  camp: "#a21caf",
+  hackathon: "#2563eb",
+  forum: "#0ea5e9",
+  summit: "#0d9488",
+  competition: "#e11d48",
   other: "#64748b",
 };
 
@@ -32,6 +38,12 @@ export const TYPE_LABEL: Record<ProjectType, string> = {
   internship: "Internship",
   scholarship: "Scholarship",
   conference: "Conference",
+  model_un: "Model UN",
+  camp: "Camp",
+  hackathon: "Hackathon",
+  forum: "Forum",
+  summit: "Summit",
+  competition: "Competition",
   other: "Other",
 };
 
@@ -41,3 +53,17 @@ export const TYPE_LIST: { value: ProjectType; label: string; color: string }[] =
 )
   .filter((t) => t !== "other")
   .map((t) => ({ value: t, label: TYPE_LABEL[t], color: TYPE_COLOR[t] }));
+
+/** Countries that appear in the international (world) dataset. */
+export const WORLD_COUNTRIES = [
+  "Spain", "Germany", "France", "Italy", "Poland", "Portugal",
+  "Netherlands", "Belgium", "Austria", "Greece", "Estonia", "Czech Republic",
+];
+
+/** Georgian cities that appear in the local (georgia) dataset. */
+export const GEORGIA_CITIES = [
+  "Tbilisi", "Batumi", "Kutaisi", "Rustavi", "Gori", "Telavi",
+  "Zugdidi", "Borjomi", "Bakuriani", "Mestia", "Kazbegi", "Gudauri",
+  "Kvareli", "Sighnaghi", "Akhaltsikhe", "Ozurgeti", "Poti", "Kobuleti",
+  "Marneuli",
+];

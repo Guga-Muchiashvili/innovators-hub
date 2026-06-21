@@ -15,7 +15,7 @@ export function Legend({ projects }: { projects: Project[] }) {
   const activeTypes = TYPE_LIST.filter((t) => typeCounts[t.value]);
 
   return (
-    <div className="absolute bottom-6 left-6 z-20">
+    <div className="hidden md:block absolute bottom-6 left-6 z-20">
       <div className="px-4 py-3 rounded-2xl bg-white/90 backdrop-blur-xl border border-violet-100 shadow-lg shadow-violet-200/40">
         <div className="text-xs text-slate-400 uppercase tracking-wider mb-2.5 font-medium">
           Project Types
